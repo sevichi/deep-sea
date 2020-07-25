@@ -238,6 +238,7 @@ class Game {
     this.ripples.draw();
     this.sub.draw();
     this.treasures.draw();
+    this.printLegend(this.w*0.01, this.h*0.65);
     if (this.count < 72) {
       if (this.count%3 == 0) {
         this.dice1 = getRandomInt(1, 3);
@@ -377,7 +378,6 @@ class Game {
           this.players[id].score += this.players[id].treasures[t].tvalue;
         }
       }
-      console.log(this.players[id].id, this.players[id].score);
     }
     this.gameOver = true;
   }
@@ -399,45 +399,6 @@ class Game {
   checkId (id) {
     if (id in this.players) { return true; }
     else { return false; }
-  }
-
-  printPlayerScores(x, y) {
-    push();   
-      noStroke();
-      textSize(50);
-      for (let id in this.players) {
-      fill(255);
-      text(this.players[id].id, x, y);
-      var xrel = x+50;
-        for (var i = 0; i < this.players[id].treasures.length; i++) {
-          var treasure = this.players[id].treasures[i];
-          if (treasure.tcolor == 0) {
-            // fill(255, 255, 0, 100);
-            fill('#032642');
-          } else if (treasure.tcolor == 1) {
-            // fill(255, 165, 0, 100)
-            fill('#06508A');
-          } else if (treasure.tcolor == 2) {
-            // fill(255, 69, 0, 100);
-            fill('#0972C4');
-          } else if (treasure.tcolor == 3) {
-            fill('#389CD8'); 
-          } else if (treasure.tcolor == -1) {
-            fill(255, getRandomInt(1, 255), 0);
-          } else if (treasure.tcolor == -2) {
-            // fill(0, 255, getRandomInt(1, 255));
-            fill(255, getRandomInt(1, 255), 0);
-          }
-          xrel += 40*(i+1);
-          ellipse(xrel, y-15, 47, 47);
-          fill(0); 
-          text(treasure.tvalue, xrel, y);
-        }
-        xrel += 50;
-        text(this.players[id].score, y);
-        y += 50;       
-      }
-    pop();
   }
 
   printPlayerIds (x, y) {
@@ -465,20 +426,90 @@ class Game {
               } else if (treasure.tcolor == 3) {
                 fill('#389CD8'); 
               } else if (treasure.tcolor == -1) {
-                fill(255, getRandomInt(1, 255), 0);
+                fill(255, getRandomInt(200, 255), 0);
               } else if (treasure.tcolor == -2) {
-                // fill(0, 255, getRandomInt(1, 255));
-                fill(255, getRandomInt(1, 255), 0);
+                fill(0, 255, getRandomInt(1, 255));
               }
               ellipse((15+x)+15*(i+1), y-5, 10, 10)
             }
             y += 16;
             fill(200)
         }
-
     pop();
   }
 
+  printLegend(x, y) {
+    push();
+      noStroke();
+      fill(255);
+      textSize(16);
+      text("Treasure Points:", x, y);
+
+      y += 20;
+
+      var colorArr = ['#032642', '#06508A', '#0972C4', '#389CD8'];
+      var points = ["1-3pts", "4-6pts", "7-9pts", "13-15pts", "1-10pts", "5-18pts"];
+
+      for (var i = 0; i < 6; i++) {
+        if (i == 4) {
+          fill(255, getRandomInt(200, 255), 0);
+          rect(x, y-15, 120, 18);
+          fill(0);
+          text(points[i], x+5, y);
+        } else if (i == 5) {
+          fill(0, 255, getRandomInt(1, 255));
+          rect(x, y-15, 120, 18);
+          fill(0);
+          text(points[i], x+5, y);            
+        }  else {
+          fill(colorArr[i]);
+          rect(x, y-15, 120, 18);  
+          fill(255);
+          text(points[i], x+5, y);           
+        }
+        y += 20;
+      }
+    pop();
+  } 
+
+  printPlayerScores(x, y) {
+    push();   
+      noStroke();
+      textSize(50);
+      for (let id in this.players) {
+      fill(255);
+      text(this.players[id].id, x, y);
+      var xrel = x+50;
+        for (var i = 0; i < this.players[id].treasures.length; i++) {
+          var treasure = this.players[id].treasures[i];
+          if (treasure.tcolor == 0) {
+            // fill(255, 255, 0, 100);
+            fill('#032642');
+          } else if (treasure.tcolor == 1) {
+            // fill(255, 165, 0, 100)
+            fill('#06508A');
+          } else if (treasure.tcolor == 2) {
+            // fill(255, 69, 0, 100);
+            fill('#0972C4');
+          } else if (treasure.tcolor == 3) {
+            fill('#389CD8'); 
+          } else if (treasure.tcolor == -1) {
+            fill(255, getRandomInt(200, 255), 0);
+          } else if (treasure.tcolor == -2) {
+            fill(0, 255, getRandomInt(1, 255));
+          }
+          xrel += 40*(i+1);
+          ellipse(xrel, y-15, 47, 47);
+          fill(0); 
+          text(treasure.tvalue, xrel, y);
+        }
+        xrel += 50;
+        text(this.players[id].score, y);
+        y += 50;       
+      }
+    pop();
+  }
+  
   setVelocity(id, velx, vely) {
     this.players[id].velocity.x = velx;
     this.players[id].velocity.y = vely;
@@ -657,35 +688,17 @@ class Treasures {
       this.treasures.push(t);
     }
 
-    var r2 = new Treasure((this.x + 550), (this.y + 370), getRandomInt(3, 12), -2);
+    var r2 = new Treasure((this.x + 550), (this.y + 370), getRandomInt(5, 18), -2);
     this.treasures.push(r2);        
 
     var l = 0
     for (l = 0; l < 7; l++) {
       // type 2 = fill(255, 69, 0)
       var c = 3;
-      var t = new Treasure((this.x + 500 - l*50), (this.y + 400 + l*15), getRandomInt(10, 12), c);
+      var t = new Treasure((this.x + 500 - l*50), (this.y + 400 + l*15), getRandomInt(13, 15), c);
       console.log(t);
       this.treasures.push(t);
     }    
-    // // try with 10
-    // var j = 0;
-    // for (j = 0; j < this.numMid; j++) {
-    //   // type 1 = fill(255, 165, 0)
-    //   var c = 1;
-    //   var t = new Treasure((this.x - 350 + j*100), (this.y + 150 + j*25), getRandomInt(5, 8), c);
-    //   this.treasures.push(t);
-    // }
-
-    // // try with 7
-    // var k = 0
-    // for (k = 0; k < this.numRare; k++) {
-    //   console.log('new treasure');
-    //   // type 2 = fill(255, 69, 0)
-    //   var c = 2;
-    //   var t = new Treasure((this.x + 500 - k*100), (this.y + 450 + k*25), getRandomInt(12, 16), c);
-    //   this.treasures.push(t);
-    // }
   }
 
   draw() {
@@ -701,6 +714,7 @@ class Treasure {
     this.tcolor = tcolor;
     this.taken = false;
     this.hasPlayer = false;
+    this.showTreasureValue = false;
   }
 
   draw() {
@@ -720,12 +734,18 @@ class Treasure {
       } else if (this.tcolor == 3) {
         fill('#389CD8'); 
       } else if (this.tcolor == -1) {
-        fill(255, getRandomInt(1, 255), 0);
+        fill(255, getRandomInt(200, 255), 0);
       } else if (this.tcolor == -2) {
-        // fill(0, 255, getRandomInt(1, 255));
-        fill(255, getRandomInt(1, 255), 0);
+        fill(0, 255, getRandomInt(1, 255));
       }
       ellipse(this.x, this.y, 40);
+      if (this.showTreasureValue) {
+        console.log('displaying treasure values');
+        fill(255);
+        noStroke();
+        textSize(16);
+        text(this.tvalue, this.x, this.y);
+      }
     pop();
   }
 }
