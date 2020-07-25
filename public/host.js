@@ -199,7 +199,7 @@ class Game {
     this.colliders	= new Group();
     this.ripples    = new Ripples();
     // length 100, height 50
-    this.sub        = new Sub(w/2-50, 20, 25);
+    this.sub        = new Sub(w/2-50, 20, 50);
     this.treasures  = new Treasures(5, 10, 7, w/2-50, 100);
     this.dice1 = 3;
     this.dice2 = 3;
@@ -412,11 +412,21 @@ class Game {
         for (var i = 0; i < this.players[id].treasures.length; i++) {
           var treasure = this.players[id].treasures[i];
           if (treasure.tcolor == 0) {
-            fill(255, 255, 0);                  
+            // fill(255, 255, 0, 100);
+            fill('#032642');
           } else if (treasure.tcolor == 1) {
-            fill(255, 165, 0)
+            // fill(255, 165, 0, 100)
+            fill('#06508A');
           } else if (treasure.tcolor == 2) {
-            fill(255, 69, 0);
+            // fill(255, 69, 0, 100);
+            fill('#0972C4');
+          } else if (treasure.tcolor == 3) {
+            fill('#389CD8'); 
+          } else if (treasure.tcolor == -1) {
+            fill(255, getRandomInt(1, 255), 0);
+          } else if (treasure.tcolor == -2) {
+            // fill(0, 255, getRandomInt(1, 255));
+            fill(255, getRandomInt(1, 255), 0);
           }
           xrel += 40*(i+1);
           ellipse(xrel, y-15, 47, 47);
@@ -444,11 +454,21 @@ class Game {
             for (var i = 0; i < this.players[id].treasures.length; i++) {
               var treasure = this.players[id].treasures[i];
               if (treasure.tcolor == 0) {
-                fill(255, 255, 0);                  
+                // fill(255, 255, 0, 100);
+                fill('#032642');
               } else if (treasure.tcolor == 1) {
-                fill(255, 165, 0)
+                // fill(255, 165, 0, 100)
+                fill('#06508A');
               } else if (treasure.tcolor == 2) {
-                fill(255, 69, 0);
+                // fill(255, 69, 0, 100);
+                fill('#0972C4');
+              } else if (treasure.tcolor == 3) {
+                fill('#389CD8'); 
+              } else if (treasure.tcolor == -1) {
+                fill(255, getRandomInt(1, 255), 0);
+              } else if (treasure.tcolor == -2) {
+                // fill(0, 255, getRandomInt(1, 255));
+                fill(255, getRandomInt(1, 255), 0);
               }
               ellipse((15+x)+15*(i+1), y-5, 10, 10)
             }
@@ -595,28 +615,77 @@ class Treasures {
     for (i = 0; i < this.numCheap; i++) {
       // type 0 = fill(255, 255, 0)
       var c = 0;
-      var t = new Treasure((this.x - i*100), (this.y + i*25), getRandomInt(1, 3), c);
+      // var t = new Treasure((this.x - i*100), (this.y + i*25), getRandomInt(1, 3), c);
+      var t = new Treasure((this.x - i*50), (this.y + i*15), getRandomInt(1, 3), c);
       this.treasures.push(t);
     }
 
-    // try with 10
+    // try with 5
     var j = 0;
-    for (j = 0; j < this.numMid; j++) {
+    for (j = 0; j < this.numCheap; j++) {
       // type 1 = fill(255, 165, 0)
       var c = 1;
-      var t = new Treasure((this.x - 350 + j*100), (this.y + 150 + j*25), getRandomInt(5, 8), c);
+      var t = new Treasure((this.x - 250 - j*50), (this.y + 75 + j*15), getRandomInt(4, 6), c);
+      console.log(t);
       this.treasures.push(t);
     }
 
+    var r = new Treasure((this.x - 400), (this.y + 165), getRandomInt(1,10), -1);
+    this.treasures.push(r);
     // try with 7
     var k = 0
-    for (k = 0; k < this.numRare; k++) {
-      console.log('new treasure');
+    for (k = 0; k < 8; k++) {
       // type 2 = fill(255, 69, 0)
       var c = 2;
-      var t = new Treasure((this.x + 500 - k*100), (this.y + 450 + k*25), getRandomInt(12, 16), c);
+      var t = new Treasure((this.x - 350 + k*50), (this.y + 180 + k*10), getRandomInt(7, 9), c);
       this.treasures.push(t);
     }
+
+    var m = 0
+    for (m = 0; m < 6; m++) {
+      // type 2 = fill(255, 69, 0)
+      var c = 1;
+      var t = new Treasure((this.x + 50 + m*50), (this.y + 260 + m*10), getRandomInt(4, 6), c);
+      this.treasures.push(t);
+    }
+
+    var n = 0
+    for (n = 0; n < 4; n++) {
+      // type 2 = fill(255, 69, 0)
+      var c = 0;
+      var t = new Treasure((this.x + 350 + n*50), (this.y + 320 + n*10), getRandomInt(1, 3), c);
+      this.treasures.push(t);
+    }
+
+    var r2 = new Treasure((this.x + 550), (this.y + 370), getRandomInt(3, 12), -2);
+    this.treasures.push(r2);        
+
+    var l = 0
+    for (l = 0; l < 7; l++) {
+      // type 2 = fill(255, 69, 0)
+      var c = 3;
+      var t = new Treasure((this.x + 500 - l*50), (this.y + 400 + l*15), getRandomInt(10, 12), c);
+      console.log(t);
+      this.treasures.push(t);
+    }    
+    // // try with 10
+    // var j = 0;
+    // for (j = 0; j < this.numMid; j++) {
+    //   // type 1 = fill(255, 165, 0)
+    //   var c = 1;
+    //   var t = new Treasure((this.x - 350 + j*100), (this.y + 150 + j*25), getRandomInt(5, 8), c);
+    //   this.treasures.push(t);
+    // }
+
+    // // try with 7
+    // var k = 0
+    // for (k = 0; k < this.numRare; k++) {
+    //   console.log('new treasure');
+    //   // type 2 = fill(255, 69, 0)
+    //   var c = 2;
+    //   var t = new Treasure((this.x + 500 - k*100), (this.y + 450 + k*25), getRandomInt(12, 16), c);
+    //   this.treasures.push(t);
+    // }
   }
 
   draw() {
@@ -640,11 +709,21 @@ class Treasure {
       if (this.taken == true) {
         fill(200);
       } else if (this.tcolor == 0) {
-        fill(255, 255, 0);
+        // fill(255, 255, 0, 100);
+        fill('#032642');
       } else if (this.tcolor == 1) {
-        fill(255, 165, 0)
+        // fill(255, 165, 0, 100)
+        fill('#06508A');
       } else if (this.tcolor == 2) {
-        fill(255, 69, 0);
+        // fill(255, 69, 0, 100);
+        fill('#0972C4');
+      } else if (this.tcolor == 3) {
+        fill('#389CD8'); 
+      } else if (this.tcolor == -1) {
+        fill(255, getRandomInt(1, 255), 0);
+      } else if (this.tcolor == -2) {
+        // fill(0, 255, getRandomInt(1, 255));
+        fill(255, getRandomInt(1, 255), 0);
       }
       ellipse(this.x, this.y, 40);
     pop();
