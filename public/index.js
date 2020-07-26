@@ -227,7 +227,7 @@ function setupUI() {
   });
   takeButton.onPress = onTakeButtonPress;
 
-  leaveButton = createButton("Leave", lX, lY, lW, lH);
+  leaveButton = createButton("Done", lX, lY, lW, lH);
   leaveButton.setStyle({
     textSize: 40,
     fillBg: playerColorDim,

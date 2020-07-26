@@ -134,21 +134,23 @@ function mousePressed() {
 
 ////////////
 // Input processing
-function processJoystick (data) {
+// function processJoystick (data) {
   
-  game.setVelocity(data.id, data.joystickX*velScale, -data.joystickY*velScale);
+//   game.setVelocity(data.id, data.joystickX*velScale, -data.joystickY*velScale);
 
-  if (debug) {
-    console.log(data.id + ': {' +
-                data.joystickX + ',' +
-                data.joystickY + '}');
-  }
-}
+//   if (debug) {
+//     console.log(data.id + ': {' +
+//                 data.joystickX + ',' +
+//                 data.joystickY + '}');
+//   }
+// }
 
 function processButton (data) {
-  game.players[data.id].val = data.button;
-
-  game.rollDice(data.id);
+  // console.log(game.playerIds, game.playerTurn, data.id);
+  if (game.playerIds[game.playerTurn] == data.id) {
+    game.players[data.id].val = data.button;
+    game.rollDice(data.id);
+  }
   // game.createRipple(data.id, 300, 1000);
   
   if (debug) {
@@ -158,8 +160,10 @@ function processButton (data) {
 }
 
 function processFlipButton (data) {
-  game.players[data.id].val = data.flipButton;
-  game.flipDirection(data.id);
+  if (game.playerIds[game.playerTurn] == data.id) {
+    game.players[data.id].val = data.flipButton;
+    game.flipDirection(data.id);
+  }
 
   if (debug) {
     console.log(data.id + ': ' +
@@ -168,8 +172,15 @@ function processFlipButton (data) {
 }
 
 function processTakeButton (data) {
-  game.players[data.id].val = data.takeButton;
-  game.takeTreasure(data.id);
+  if (game.playerIds[game.playerTurn] == data.id) {
+    game.players[data.id].val = data.takeButton;
+    game.takeTreasure(data.id);
+    if ((game.playerTurn+1) == game.playerIds.length) {
+      game.playerTurn = 0;
+    } else {
+      game.playerTurn++;
+    }    
+  }
 
   if (debug) {
     console.log(data.id + ': ' +
@@ -179,6 +190,13 @@ function processTakeButton (data) {
 
 function processLeaveButton (data) {
   game.players[data.id].val = data.leaveButton;
+  if (game.playerIds[game.playerTurn] == data.id) {
+    if ((game.playerTurn+1) == game.playerIds.length) {
+      game.playerTurn = 0;
+    } else {
+      game.playerTurn++;
+    }
+  }
   // do nothing for now
 
   if (debug) {
@@ -207,6 +225,8 @@ class Game {
     this.gameOver = false;
     // there are 24 frames per second
     this.count = 73;
+    this.playerTurn = 0;
+    this.playerIds = [];
     this.movePlayer = null;
   }
 
@@ -226,6 +246,7 @@ class Game {
     print(this.players[id].id + " added.");
     this.id++;
     this.numPlayers++;
+    this.playerIds.push(id);
   }
 
   setup() {
@@ -349,9 +370,9 @@ class Game {
           if (!this.treasures.treasures[(this.players[id].pos-1)].hasPlayer) {
             this.players[id].pos--;
           } else {
-            // bunny hop
+            // bunny hop  
             var h = 2;
-            while (this.treasures.treasures[(this.players[id].pos-h)].hasPlayer) {
+            while (!((this.players[id].pos-h) < 0) && this.treasures.treasures[(this.players[id].pos-h)].hasPlayer) {
               h++;
             }            
             this.players[id].pos-=h;
@@ -403,6 +424,14 @@ class Game {
   remove (id) {
       this.colliders.remove(this.players[id]);
       this.players[id].remove();
+      var newPlayerIds = [];
+      this.playerIds.forEach(function(playerId) {
+        if (playerId != id) {
+          newPlayerIds.push(playerId);
+        }
+      });
+      this.playerIds = newPlayerIds;
+      // this.playerIds = remove(this.playerIds, id);
       delete this.players[id];
       this.numPlayers--;
   }
