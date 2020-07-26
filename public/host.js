@@ -199,7 +199,7 @@ class Game {
     this.colliders	= new Group();
     this.ripples    = new Ripples();
     // length 100, height 50
-    this.sub        = new Sub(w/2-50, 20, 50);
+    this.sub        = new Sub(w/2-50, 20, 80);
     this.treasures  = new Treasures(5, 10, 7, w/2-50, 100);
     this.dice1 = 3;
     this.dice2 = 3;
@@ -329,11 +329,17 @@ class Game {
     // you got to move it move it
     for (var i = 0; i < move; i++) {
       if (this.players[id].direction === 'down') {
-        if (!this.treasures.treasures[(this.players[id].pos+1)].hasPlayer) {
+        if (this.players[id].pos+1 == this.treasures.treasures.length) {
+          //do nothing
+        } else if (!this.treasures.treasures[(this.players[id].pos+1)].hasPlayer) {
           this.players[id].pos++;          
         } else {
           // bunny hop
-          this.players[id].pos+=2;
+          var h = 2;
+          while (this.treasures.treasures[(this.players[id].pos+h)].hasPlayer) {
+            h++;
+          }
+          this.players[id].pos+=h;
         }
       } else if (this.players[id].direction === 'up') {
         if ((this.players[id].pos-1) < 0) {
@@ -343,7 +349,11 @@ class Game {
             this.players[id].pos--;
           } else {
             // bunny hop
-            this.players[id].pos-=2;
+            var h = 2;
+            while (this.treasures.treasures[(this.players[id].pos-h)].hasPlayer) {
+              h++;
+            }            
+            this.players[id].pos-=h;
           }
         }
       }      
@@ -509,7 +519,7 @@ class Game {
       }
     pop();
   }
-  
+
   setVelocity(id, velx, vely) {
     this.players[id].velocity.x = velx;
     this.players[id].velocity.y = vely;
