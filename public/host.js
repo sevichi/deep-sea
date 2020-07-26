@@ -15,7 +15,8 @@ Run http-server -c-1 -p80 to start server on open port 80.
 // Network Settings
 // const serverIp      = 'https://yourservername.herokuapp.com';
 // const serverIp      = 'https://yourprojectname.glitch.me';
-const serverIp      = '127.0.0.1';
+const serverIp      = '192.168.0.18';
+// const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
 const local         = true;   // true if running locally, false
                               // if running on remote server
@@ -199,7 +200,7 @@ class Game {
     this.colliders	= new Group();
     this.ripples    = new Ripples();
     // length 100, height 50
-    this.sub        = new Sub(w/2-50, 20, 80);
+    this.sub        = new Sub(w/2-50, 20, 40);
     this.treasures  = new Treasures(5, 10, 7, w/2-50, 100);
     this.dice1 = 3;
     this.dice2 = 3;

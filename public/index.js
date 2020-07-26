@@ -16,7 +16,8 @@ Run http-server -c-1 -p80 to start server on open port 80.
 // Network Settings
 // const serverIp      = 'https://yourservername.herokuapp.com';
 // const serverIp      = 'https://yourprojectname.glitch.me';
-const serverIp      = '127.0.0.1';
+const serverIp      = '192.168.0.18';
+// const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
 const local         = true;   // true if running locally, false
                               // if running on remote server
@@ -127,10 +128,28 @@ function setupUI() {
     // jW = 0.9*width;
     // jH = 0.9*width;
     
-    bX = 0.05*windowWidth;
-    bY = 0.75*windowHeight;
-    bW = 0.9*windowWidth;
-    bH = 0.2*windowHeight;
+    bX = 0.10*windowWidth;
+    bY = 0.05*windowHeight;
+    bW = 0.8*windowWidth;
+    bH = 0.175*windowHeight;
+
+    fX = 0.10*windowWidth;
+    fY = 0.25*windowHeight;
+    fW = 0.8*windowWidth;
+    // bH = 0.9*windowHeight;
+    fH = 0.175*windowHeight;
+
+    // 'take treasure' button values
+    tX = 0.10*windowWidth;
+    tY = 0.45*windowHeight;
+    tW = 0.8*windowWidth;
+    tH = 0.175*windowHeight;
+
+    // 'leave treasure' button values
+    lX = 0.10*windowWidth;
+    lY = 0.65*windowHeight;
+    lW = 0.8*windowWidth;
+    lH = 0.175*windowHeight;     
   }
   else {
     // jX = 0.05*width;
