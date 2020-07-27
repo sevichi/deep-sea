@@ -147,9 +147,11 @@ function mousePressed() {
 
 function processButton (data) {
   // console.log(game.playerIds, game.playerTurn, data.id);
-  if (game.playerIds[game.playerTurn] == data.id) {
+  if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled) {
     game.players[data.id].val = data.button;
     game.rollDice(data.id);
+  } else if (game.playerIds[game.playerTurn] == data.id && game.players[data.id].rolled) {
+    console.log('Already rolled. Take/drop treasure or end your turn.')
   }
   // game.createRipple(data.id, 300, 1000);
   
@@ -160,9 +162,13 @@ function processButton (data) {
 }
 
 function processFlipButton (data) {
-  if (game.playerIds[game.playerTurn] == data.id) {
+  if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled
+    && (game.players[data.id].pos > 0)) {
     game.players[data.id].val = data.flipButton;
     game.flipDirection(data.id);
+  } else if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled
+    && (game.players[data.id].pos == -1)) {
+    console.log("You're still in the Sub dude...");
   }
 
   if (debug) {
@@ -172,14 +178,17 @@ function processFlipButton (data) {
 }
 
 function processTakeButton (data) {
-  if (game.playerIds[game.playerTurn] == data.id) {
+  if (game.playerIds[game.playerTurn] == data.id && game.players[data.id].rolled) {
     game.players[data.id].val = data.takeButton;
     game.takeTreasure(data.id);
+    game.players[data.id].rolled = false;
     if ((game.playerTurn+1) == game.playerIds.length) {
       game.playerTurn = 0;
     } else {
       game.playerTurn++;
     }    
+  } else if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled) {
+    console.log('Please roll first.')
   }
 
   if (debug) {
@@ -189,13 +198,16 @@ function processTakeButton (data) {
 }
 
 function processLeaveButton (data) {
-  game.players[data.id].val = data.leaveButton;
-  if (game.playerIds[game.playerTurn] == data.id) {
+  if (game.playerIds[game.playerTurn] == data.id && game.players[data.id].rolled) {
+    game.players[data.id].val = data.leaveButton;
+    game.players[data.id].rolled = false;
     if ((game.playerTurn+1) == game.playerIds.length) {
       game.playerTurn = 0;
     } else {
       game.playerTurn++;
     }
+  } else if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled) {
+    console.log('Please roll first.')
   }
   // do nothing for now
 
@@ -242,6 +254,7 @@ class Game {
     this.players[id].treasures = [];
     this.players[id].score = 0;
     this.players[id].direction = 'down';
+    this.players[id].rolled = false;
     this.colliders.add(this.players[id]);
     print(this.players[id].id + " added.");
     this.id++;
@@ -325,19 +338,27 @@ class Game {
 
   displayDice(w, h) {
       push();
+          // fill(255, 0, 0);
+          // rect(w*0.9, h, 30, 30);
+          // rect(w*0.9 + 40, h, 30, 30);
+          // fill(255);
+          // textSize(20);
+          // text(this.dice1, w*0.9 + 10, h + 20);
+          // text(this.dice2, w*0.9 + 50, h + 20);
           fill(255, 0, 0);
-          rect(w*0.9, h, 30, 30);
-          rect(w*0.9 + 40, h, 30, 30);
+          rect(w*0.85, h, 50, 50);
+          rect(w*0.85 + 60, h, 50, 50);
           fill(255);
-          textSize(20);
-          text(this.dice1, w*0.9 + 10, h + 20);
-          text(this.dice2, w*0.9 + 50, h + 20);
+          textSize(40);
+          text(this.dice1, w*0.86, h+this.h*0.05);
+          text(this.dice2, w*0.86 + 60, h+this.h*0.05);          
       pop(); 
   }
 
   rollDice(id) {
     this.count = 0;
     this.movePlayer = id;
+    this.players[id].rolled = true;
   }
 
   move(id) {

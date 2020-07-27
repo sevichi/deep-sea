@@ -209,7 +209,7 @@ function setupUI() {
   });
   button.onPress = onButtonPress;
 
-  flipButton = createButton("Up", fX, fY, fW, fH);
+  flipButton = createButton("Head Up", fX, fY, fW, fH);
   flipButton.setStyle({
     textSize: 40,
     fillBg: playerColorDim,
@@ -227,7 +227,7 @@ function setupUI() {
   });
   takeButton.onPress = onTakeButtonPress;
 
-  leaveButton = createButton("Done", lX, lY, lW, lH);
+  leaveButton = createButton("End Turn", lX, lY, lW, lH);
   leaveButton.setStyle({
     textSize: 40,
     fillBg: playerColorDim,
