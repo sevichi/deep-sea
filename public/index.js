@@ -14,14 +14,17 @@ Run http-server -c-1 -p80 to start server on open port 80.
 
 ////////////
 // Network Settings
-const serverIp      = 'https://deepseaonline.herokuapp.com';
+let serverIp;
 // const serverIp      = 'https://yourprojectname.glitch.me';
-// const serverIp      = '192.168.0.18';
 // const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
-const local         = false;   // true if running locally, false
+const local         = true;   // true if running locally, false
                               // if running on remote server
-
+if (local) {
+  serverIp = '192.168.0.18';
+} else {
+  serverIp = 'https://deepseaonline.herokuapp.com';
+}
 // Global variables here. ---->
 
 // Initialize GUI related variables
@@ -35,6 +38,7 @@ let prevJ       = {x: 0, y: 0};
 // Initialize Game related variables
 let playerColor;
 let playerColorDim;
+let playerName;
 
 // <----
 
@@ -44,6 +48,7 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
 
   // Client setup here. ---->
   
@@ -78,6 +83,7 @@ function windowResized() {
 
 function draw() {
   background(0);
+  playerName.input(savePlayerName);
 
   if(isClientConnected(display=true)) {
     // Client draw here. ---->
@@ -117,9 +123,14 @@ function setPlayerColors() {
   colorMode(RGB);
 }
 
+function savePlayerName() {
+  console.log(this.value);
+}
+
 function setupUI() {
   // Temp variables for calculating GUI object positions
   let jX, jY, jW, jH, bX, bY, bW, bH, tX, tY, tW, tH, lX, lY, lW, lH;
+  let nX, nY, nW, nH;
   
   // Rudimentary calculation based on portrait or landscape 
   if (width < height) {
@@ -149,7 +160,14 @@ function setupUI() {
     lX = 0.10*windowWidth;
     lY = 0.65*windowHeight;
     lW = 0.8*windowWidth;
-    lH = 0.175*windowHeight;     
+    lH = 0.175*windowHeight; 
+
+    // player name input
+    nX = 0.10*windowWidth;
+    nY = 0.85*windowHeight;
+    nW = 0.8*windowWidth;
+    nH = 0.10*windowHeight;
+
   }
   else {
     // jX = 0.05*width;
@@ -234,7 +252,9 @@ function setupUI() {
     fillBgHover: playerColorDim,
     fillBgActive: playerColor
   });
-  leaveButton.onPress = onLeaveButtonPress;  
+  leaveButton.onPress = onLeaveButtonPress; 
+
+  playerName = createInput("Enter Name", nX, nY, nW, nH);
 }
 
 ////////////

@@ -13,13 +13,16 @@ Run http-server -c-1 -p80 to start server on open port 80.
 
 ////////////
 // Network Settings
-const serverIp      = 'https://deepseaonline.herokuapp.com';
-// const serverIp      = 'https://yourprojectname.glitch.me';
-// const serverIp      = '192.168.0.18';
+let serverIp;
 // const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
-const local         = false;   // true if running locally, false
+const local         = true;   // true if running locally, false
                               // if running on remote server
+if (local) {
+  serverIp = '192.168.0.18';
+} else {
+  serverIp = 'https://deepseaonline.herokuapp.com';
+}
 
 // Global variables here. ---->
 
@@ -230,7 +233,7 @@ class Game {
     this.colliders	= new Group();
     this.ripples    = new Ripples();
     // length 100, height 50
-    this.sub        = new Sub(w/2-50, 20, 40);
+    this.sub        = new Sub(w/2-50, 20, 80);
     this.treasures  = new Treasures(5, 10, 7, w/2-50, 100);
     this.dice1 = 3;
     this.dice2 = 3;
@@ -263,7 +266,6 @@ class Game {
   }
 
   setup() {
-    console.log('in game setup');
     this.treasures.createTreasures();
     console.log(this.treasures);
   }
@@ -387,6 +389,17 @@ class Game {
       } else if (this.players[id].direction === 'up') {
         if ((this.players[id].pos-1) < 0) {
           this.players[id].pos = -1;
+          var newPlayerIds = [];
+          this.playerIds.forEach(function(playerId) {
+            if (playerId != id) {
+              newPlayerIds.push(playerId);
+            }
+          });
+          this.playerIds = newPlayerIds;
+          if (this.playerIds.length == 0) {
+            this.endGame();
+          }
+          console.log('made it back to the sub');
         } else {
           if (!this.treasures.treasures[(this.players[id].pos-1)].hasPlayer) {
             this.players[id].pos--;
@@ -452,7 +465,6 @@ class Game {
         }
       });
       this.playerIds = newPlayerIds;
-      // this.playerIds = remove(this.playerIds, id);
       delete this.players[id];
       this.numPlayers--;
   }
@@ -697,11 +709,6 @@ class Treasures {
   }
 
   createTreasures() {
-    // var t = new Treasure((this.x - 1*100), (this.y + 1*50), getRandomInt(1, 3), 0);
-    // // console.log(t);
-    // this.treasures.push(t);
-    // console.log(this.treasures);
-
     // try with 5
     var i = 0;
     for (i = 0; i < this.numCheap; i++) {
