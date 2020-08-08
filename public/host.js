@@ -16,7 +16,7 @@ Run http-server -c-1 -p80 to start server on open port 80.
 let serverIp;
 // const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
-const local         = true;   // true if running locally, false
+const local         = false;   // true if running locally, false
                               // if running on remote server
 if (local) {
   serverIp = '192.168.0.18';
