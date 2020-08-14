@@ -16,7 +16,7 @@ Run http-server -c-1 -p80 to start server on open port 80.
 let serverIp;
 // const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
-const local         = false;   // true if running locally, false
+const local         = true;   // true if running locally, false
                               // if running on remote server
 if (local) {
   serverIp = '192.168.0.18';
@@ -29,6 +29,8 @@ if (local) {
 const velScale	= 10;
 const debug = true;
 let game;
+let gameLog = "let the games begin";
+let turn, move;
 
 // <----
 
@@ -306,6 +308,17 @@ class Game {
         this.printPlayerScores(this.w/2-80, this.h/2+80);
       pop();      
     }
+
+    this.displayLog(gameLog, this.w*.8, this.h*.2);
+  }
+
+  displayLog(gameLog, x, y) {
+    push();
+      noStroke();
+      fill(255);
+      textSize(150);
+      text(gameLog, x, y);
+    pop();
   }
 
   createRipple(id, r, duration) {
@@ -482,8 +495,9 @@ class Game {
         text("# players: " + this.numPlayers, x, y);
 
         y = y + 16;
-        fill(200);
+        // fill(200);
         for (let id in this.players) {
+            fill(this.players[id].color);
             text(this.players[id].id, x, y);
             for (var i = 0; i < this.players[id].treasures.length; i++) {
               var treasure = this.players[id].treasures[i];
@@ -506,7 +520,7 @@ class Game {
               ellipse((15+x)+15*(i+1), y-5, 10, 10)
             }
             y += 16;
-            fill(200)
+            // fill(200)
         }
     pop();
   }

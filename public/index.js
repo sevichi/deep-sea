@@ -18,7 +18,7 @@ let serverIp;
 // const serverIp      = 'https://yourprojectname.glitch.me';
 // const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
-const local         = false;   // true if running locally, false
+const local         = true;   // true if running locally, false
                               // if running on remote server
 if (local) {
   serverIp = '192.168.0.18';
@@ -30,6 +30,10 @@ if (local) {
 // Initialize GUI related variables
 let gui         = null;
 let button      = null;
+let flipButton  = null;
+let takeButton  = null;
+let leaveButton = null;
+let resetColor  = null;
 let joystick    = null;
 let joystickRes = 4;
 let thisJ       = {x: 0, y: 0};
@@ -163,9 +167,9 @@ function setupUI() {
     lH = 0.175*windowHeight; 
 
     // player name input
-    nX = 0.10*windowWidth;
+    nX = 0.25*windowWidth;
     nY = 0.85*windowHeight;
-    nW = 0.8*windowWidth;
+    nW = 0.5*windowWidth;
     nH = 0.10*windowHeight;
 
   }
@@ -255,6 +259,16 @@ function setupUI() {
   leaveButton.onPress = onLeaveButtonPress; 
 
   playerName = createInput("Enter Name", nX, nY, nW, nH);
+
+  resetColor = createButton("New Color", nX, nY, nW, nH);
+  resetColor.setStyle({
+    textSize: 40,
+    fillBg: playerColorDim,
+    fillBgHover: playerColorDim,
+    fillBgActive: playerColor
+  });
+  resetColor.onPress = resetPlayerColor;  
+
 }
 
 ////////////
@@ -273,6 +287,53 @@ function onJoystickChange() {
   
   prevJ.x = thisJ.x;
   prevJ.y = thisJ.y;
+}
+
+function resetPlayerColor() {
+  setPlayerColors();
+  setButtonStyles();
+  sendData('playerColor', { 
+    r: red(playerColor)/255,
+    g: green(playerColor)/255,
+    b: blue(playerColor)/255
+  });  
+}
+
+function setButtonStyles() {
+  button.setStyle({
+    textSize: 40,
+    fillBg: playerColorDim,
+    fillBgHover: playerColorDim,
+    fillBgActive: playerColor
+  });
+
+  flipButton.setStyle({
+    textSize: 40,
+    fillBg: playerColorDim,
+    fillBgHover: playerColorDim,
+    fillBgActive: playerColor
+  });
+
+  leaveButton.setStyle({
+    textSize: 40,
+    fillBg: playerColorDim,
+    fillBgHover: playerColorDim,
+    fillBgActive: playerColor
+  });
+
+  takeButton.setStyle({
+    textSize: 40,
+    fillBg: playerColorDim,
+    fillBgHover: playerColorDim,
+    fillBgActive: playerColor
+  });
+
+  resetColor.setStyle({
+    textSize: 40,
+    fillBg: playerColorDim,
+    fillBgHover: playerColorDim,
+    fillBgActive: playerColor
+  });
 }
 
 function onButtonPress() {

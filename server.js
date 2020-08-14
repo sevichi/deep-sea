@@ -110,11 +110,11 @@ function newConnection(socket) {
 
     if (clients[socket.id] != null) {
       // If the device is a client, delete it
-      delete clients[socket.id];
+      // delete clients[socket.id];
       console.log('Client removed.\tNumber of clients: ' + Object.keys(clients).length);
 
       // Notify hosts that client has disconnected.
-      socket.in('host').emit('clientDisconnect', {id: socket.id});
+      // socket.in('host').emit('clientDisconnect', {id: socket.id});
     } 
     else if (hosts[socket.id] != null) {
       // If the device is a host, delete it
@@ -122,14 +122,21 @@ function newConnection(socket) {
       delete hosts[socket.id];
       console.log('Host with ID ' + roomId + ' removed.\tHumber of hosts: ' + Object.keys(hosts).length);
 
+      // TODO: add handling for all clients connected to host when host
+      // is disconnected.
+      Object.keys(clients).forEach((c) => {
+        if (clients[c].roomId == roomId) {
+          delete clients[c];
+        }
+        console.log('Client removed.\tNumber of clients: ' + Object.keys(clients).length)
+      });
+
       // Remove corresponding room
       let key = getKeyByValue(rooms, socket.id);
       if (key != null) {
         delete rooms[key];
       }
 
-      // TODO: add handling for all clients connected to host when host
-      // is disconnected.
     }
   })
 
