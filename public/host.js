@@ -29,8 +29,8 @@ if (local) {
 const velScale	= 10;
 const debug = true;
 let game;
-let gameLog = "let the games begin";
-let turn, move;
+let gameLog = "let the games begin!";
+let move = "roll";
 
 // <----
 
@@ -155,8 +155,9 @@ function processButton (data) {
   if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled) {
     game.players[data.id].val = data.button;
     game.rollDice(data.id);
+    move = "pick/drop treasure"
   } else if (game.playerIds[game.playerTurn] == data.id && game.players[data.id].rolled) {
-    console.log('Already rolled. Take/drop treasure or end your turn.')
+    gameLog = 'Already rolled. Take/drop treasure or end your turn.';
   }
   // game.createRipple(data.id, 300, 1000);
   
@@ -173,7 +174,7 @@ function processFlipButton (data) {
     game.flipDirection(data.id);
   } else if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled
     && (game.players[data.id].pos == -1)) {
-    console.log("You're still in the Sub dude...");
+    gameLog = "You're still in the Sub dude...";
   }
 
   if (debug) {
@@ -187,13 +188,14 @@ function processTakeButton (data) {
     game.players[data.id].val = data.takeButton;
     game.takeTreasure(data.id);
     game.players[data.id].rolled = false;
+    move = "roll";
     if ((game.playerTurn+1) == game.playerIds.length) {
       game.playerTurn = 0;
     } else {
       game.playerTurn++;
     }    
   } else if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled) {
-    console.log('Please roll first.')
+    gameLog = 'Please roll first.';
   }
 
   if (debug) {
@@ -206,13 +208,14 @@ function processLeaveButton (data) {
   if (game.playerIds[game.playerTurn] == data.id && game.players[data.id].rolled) {
     game.players[data.id].val = data.leaveButton;
     game.players[data.id].rolled = false;
+    move = "roll";
     if ((game.playerTurn+1) == game.playerIds.length) {
       game.playerTurn = 0;
     } else {
       game.playerTurn++;
     }
   } else if (game.playerIds[game.playerTurn] == data.id && !game.players[data.id].rolled) {
-    console.log('Please roll first.')
+    gameLog = 'Please roll first.';
   }
   // do nothing for now
 
@@ -309,15 +312,26 @@ class Game {
       pop();      
     }
 
-    this.displayLog(gameLog, this.w*.8, this.h*.2);
+    this.printLog(gameLog, this.playerIds, this.playerTurn, this.players, move, this.w*.93, this.h*.2);
   }
 
-  displayLog(gameLog, x, y) {
+  printLog(gameLog, playerIds, playerTurn, players, move, x, y) {
     push();
       noStroke();
       fill(255);
-      textSize(150);
+      textSize(25);
+      textAlign(RIGHT);
       text(gameLog, x, y);
+      let turn;
+      if (playerIds.length > 0) {
+        if (players[playerIds[playerTurn]]) {
+          turn = players[playerIds[playerTurn]].id;          
+        }
+      } else {
+        turn = "p0";
+      }
+      fill(200, 200, 0);
+      text("it is " + turn + "'s turn to " + move, x, y+30);
     pop();
   }
 
@@ -337,12 +351,14 @@ class Game {
 
   takeTreasure(id) {
     if (this.players[id].direction === 'down' && !this.treasures.treasures[this.players[id].pos].taken) {
-      var t = this.treasures.treasures[this.players[id].pos];
+      var tcopy = this.treasures.treasures[this.players[id].pos];
+      var t = new Treasure(tcopy.x, tcopy.y, tcopy.tvalue, tcopy.tcolor);
       this.players[id].treasures.push(t);
       this.treasures.treasures[this.players[id].pos].taken = true;
     } else if (this.players[id].direction === 'up' && this.treasures.treasures[this.players[id].pos].taken) {
       if (this.players[id].treasures.length > 0) {
-        var t = this.players[id].treasures.shift();
+        var t = this.players[id].treasures[0];
+        this.players[id].treasures.splice(0, 1);
         this.treasures.treasures[this.players[id].pos].tvalue = t.tvalue;
         this.treasures.treasures[this.players[id].pos].tcolor = t.tcolor;
         this.treasures.treasures[this.players[id].pos].taken = false;
